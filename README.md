@@ -2,12 +2,12 @@
 
 WIP
 
-# Running the App
+## Running the App
 
 ### Backend
 
 1. `cd backend`
-2. `python main.py`
+2. `python wsgi.py`
 
 ### Frontend
 
