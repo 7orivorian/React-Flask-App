@@ -1,0 +1,18 @@
+.upload-form-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+
+  gap: 10px;
+
+  margin: 10px 10px 20px;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+
+  background: var(--background-dark);
+
+  &:focus {
+    transform: translateY(2px);
+  }
+}

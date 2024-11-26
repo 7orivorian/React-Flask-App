@@ -1,0 +1,85 @@
+.book-details__title {
+  font-size: 48px;
+  margin-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.book-details__author {
+  margin-top: 0;
+  font-style: italic;
+}
+
+.book-details__section-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 50px;
+  margin-bottom: 50px;
+
+  width: 100%;
+  height: fit-content;
+
+  gap: 50px;
+}
+
+.book-details__section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  text-align: left;
+
+  width: fit-content;
+  max-width: 600px;
+  height: fit-content;
+
+  background-color: var(--background-dark);
+  padding: 20px;
+  border-radius: var(--border-radius);
+}
+
+.book-details__section-header {
+  text-align: left;
+}
+
+.book-details__section-details {
+  margin-bottom: 0;
+}
+
+.book-details__series-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.book-details__series {
+  position: relative;
+  display: flex;
+
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+
+  width: fit-content;
+
+  background-color: var(--background-dark);
+  border-radius: var(--border-radius);
+  border: 1px solid transparent;
+  padding: 5px 10px;
+
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid var(--accent);
+  }
+}

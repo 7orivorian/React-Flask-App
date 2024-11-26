@@ -1,0 +1,33 @@
+.navbar {
+  position: relative;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  width: 100%;
+  height: 50px;
+
+  background-color: gainsboro;
+
+  transition: all 0.15s ease-in-out;
+
+  a {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100px;
+    height: 100%;
+    color: darkred;
+    text-decoration: none;
+    transition: inherit;
+
+    &.active {
+      position: relative;
+      font-weight: bold;
+      background-color: darkred;
+      color: gainsboro;
+    }
+  }
+}

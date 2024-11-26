@@ -1,0 +1,72 @@
+.search-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0 auto;
+
+  padding: 10px;
+
+  width: 80%;
+  max-width: 700px;
+  height: fit-content;
+}
+
+.search-input {
+  width: 100%;
+  height: 30px;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: var(--capsule-radius);
+  border: 1px solid var(--text-color-dark);
+  outline: none;
+}
+
+.search-clear {
+  position: relative;
+
+  background: none;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  transform: translateY(-125%);
+  right: -46%;
+
+  svg {
+    fill: var(--background-dark);
+    scale: 1.5;
+
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+      fill: var(--accent);
+      scale: 1.75;
+    }
+
+    &.active {
+      animation: spin 0.5s ease-in-out;
+    }
+  }
+}
+
+.book-list {
+  padding: 0;
+  list-style: none;
+
+  width: 100%;
+  max-width: 800px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
