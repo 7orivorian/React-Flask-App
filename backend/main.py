@@ -119,13 +119,30 @@ def batch_add_books():
         # Parse published date
         published_date = datetime.strptime(book_data['published'], '%Y-%m-%d').date()
 
+        # Check if author exists by name or create a new one
+        author = Author.query.filter_by(name=book_data['author_name']).first()
+        if not author:
+            author = Author(name=book_data['author_name'])
+            db.session.add(author)
+            db.session.commit()  # Commit to get the author an ID
+
+        series_name = book_data.get('series_name')
+        series = None
+        if series_name:
+            # Check if series exists by name or create a new one
+            series = Series.query.filter_by(name=series_name).first()
+            if not series:
+                series = Series(name=series_name)
+                db.session.add(series)
+                db.session.commit()  # Commit to get the series an ID
+
         # Create new book instance
         book = Book(
             title=book_data['title'],
             description=book_data['description'],
             published=published_date,
-            author_id=book_data['author_id'],
-            series_id=book_data.get('series_id')  # Optional series reference
+            author_id=author.id,
+            series_id=series.id if series else None  # Optional series reference
         )
         db.session.add(book)
         db.session.commit()
@@ -208,7 +225,7 @@ def login_user():
     access_token = user.generate_access_token()
 
     return jsonify({
-        'message': 'Login successful!',
+        'message': 'Register successful!',
         'id': user.id,
         'username': user.username,
         'access_token': access_token
