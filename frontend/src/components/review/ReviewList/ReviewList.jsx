@@ -10,7 +10,7 @@ export default function ReviewList({bookId}) {
     }, []);
 
     const fetchReviews = () => {
-        const url = `http://127.0.0.1:5000/books/${bookId}/reviews`;
+        const url = `${import.meta.env.VITE_API_URL}/books/${bookId}/reviews`;
         fetch(url)
             .then(response => response.json())
             .then(data => setReviews(data.reviews))

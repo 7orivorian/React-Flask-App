@@ -110,7 +110,6 @@ def add_book():
     return jsonify({'message': 'Book added successfully!', 'book_id': book.id})
 
 
-
 @app.route('/batchaddbooks', methods=['POST'])
 def batch_add_books():
     data = request.get_json()
@@ -180,12 +179,62 @@ def get_user(username):
 
 
 @app.route('/users', methods=['POST'])
-def add_user():
+def register_user():
     data = request.get_json()
-    user = User(username=data['username'], password=data['password'])
+    username = data.get('username')
+
+    user = User.query.filter_by(username=username).first()
+    if user:
+        return jsonify({'message': 'User already exists!'})
+
+    user = User(username=username, password=data['password'], access_token=None)
     db.session.add(user)
     db.session.commit()
+
     return jsonify({'message': 'User added successfully!'})
+
+
+@app.route('/users/login', methods=['POST'])
+def login_user():
+    data = request.get_json()
+
+    user = User.query.filter_by(username=data['username']).first()
+    if not user:
+        return jsonify({'message': 'User not found!'}), 404
+
+    if not user.check_password(data['password']):
+        return jsonify({'message': 'Wrong password!'}), 401
+
+    access_token = user.generate_access_token()
+
+    return jsonify({
+        'message': 'Login successful!',
+        'id': user.id,
+        'username': user.username,
+        'access_token': access_token
+    })
+
+
+@app.route('/users/logout', methods=['DELETE'])
+def logout_user():
+    data = request.get_json()
+
+    # Validate input data
+    if 'username' not in data or 'access_token' not in data:
+        return jsonify({'message': 'Username and access token are required!'}), 400
+
+    # Fetch the user by username
+    user = User.query.filter_by(username=data['username']).first()
+    if not user:
+        return jsonify({'message': 'User not found!'}), 404
+
+    # Validate the access token
+    if user.access_token != data['access_token']:
+        return jsonify({'message': 'Invalid access token!'}), 401
+
+    # Invalidate the token and log out the user
+    user.logout()
+    return jsonify({'message': f'User {user.username} logged out successfully!'}), 200
 
 
 @app.route('/books/<int:book_id>/reviews', methods=['GET'])
@@ -198,6 +247,18 @@ def get_reviews(book_id):
 @app.route('/reviews', methods=['POST'])
 def add_review():
     data = request.get_json()
+
+    if 'access_token' not in data:
+        return jsonify({'message': 'Access token required!'}), 401
+
+    user = User.query.filter_by(id=data['user_id']).first()
+    if not user:
+        return jsonify({'message': 'User not found!'}), 404
+
+    # Validate the access token
+    if user.access_token != data['access_token']:
+        return jsonify({'message': 'Invalid access token!'}), 401
+
     review = Review(book_id=data['book_id'], user_id=data['user_id'], rating=data['rating'], comment=data['comment'])
     db.session.add(review)
     db.session.commit()

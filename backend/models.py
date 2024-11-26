@@ -69,9 +69,37 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
+    access_token = db.Column(db.String(64), unique=False, nullable=True)
 
     def to_json(self):
         return {
             'id': self.id,
             'username': self.username
         }
+
+    def check_password(self, password):
+        return password == self.password
+
+    def generate_access_token(self):
+        """
+        Generates a new access token and stores it in the database.
+        """
+        import secrets
+
+        # Generate a secure random token
+        token = secrets.token_hex(32)  # 64-character hexadecimal string
+
+        # Update the user's access_token field
+        self.access_token = token
+
+        # Commit the change to the database
+        db.session.commit()
+
+        return token
+
+    def logout(self):
+        """
+        Invalidates the user's access token by clearing it.
+        """
+        self.access_token = None  # Clear the token
+        db.session.commit()  # Save changes to the database

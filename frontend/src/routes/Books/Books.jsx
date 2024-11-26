@@ -17,7 +17,7 @@ export default function Books() {
 
     const fetchBooks = async () => {
         try {
-            const response = await fetch("http://127.0.0.1:5000/books");
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/books`);
             if (response.ok) {
                 const data = await response.json();
                 setBooks(data.books);

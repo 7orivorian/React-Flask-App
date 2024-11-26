@@ -20,7 +20,7 @@ export default function UploadBook() {
     });
 
     const handleSubmit = async (values, actions) => {
-        const url = 'http://127.0.0.1:5000/books';
+        const url = `${import.meta.env.VITE_API_URL}/books`;
         const options = {
             method: 'POST',
             headers: {

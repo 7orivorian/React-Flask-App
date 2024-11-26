@@ -1,7 +1,15 @@
 import "./navbar.scss";
-import {NavLink} from "react-router";
+import {NavLink, useNavigate} from "react-router";
+import {useUser} from "../../context/UserContext.jsx";
 
 export default function Navbar() {
+    const {username, logout} = useUser();
+    useNavigate()
+
+    const handleLogout = () => {
+        logout();
+    };
+
     return (
         <div className="navbar">
             <NavLink to={'/'}>Home</NavLink>

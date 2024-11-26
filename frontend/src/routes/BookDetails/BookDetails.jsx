@@ -20,7 +20,7 @@ export default function BookDetails() {
     const fetchBook = async () => {
         if (!book) {
             const bookid = location.pathname.split('/')[2];
-            const url = `http://127.0.0.1:5000/books/${bookid}`
+            const url = `${import.meta.env.VITE_API_URL}/books/${bookid}`
             fetch(url, {
                 method: 'GET',
                 headers: {
