@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import {useUser} from "../../context/UserContext.jsx";
 
 export default function Login() {
-    const {login} = useUser();
+    const {setCredentials} = useUser();
     const navigate = useNavigate();
 
     const formik = useFormik({
@@ -37,7 +37,7 @@ export default function Login() {
             fetch(url, options)
                 .then(res => res.json())
                 .then(json => {
-                    login(json);
+                    setCredentials(json);
                     navigate('/');
                 })
                 .catch()

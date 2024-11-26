@@ -12,7 +12,7 @@ export const UserProvider = ({children}) => {
     const [accessToken, setAccessToken] = useState(null);
 
     // Method to set user data (e.g., after login)
-    const login = (userData) => {
+    const setCredentials = (userData) => {
         setUsername(userData.username);
         setAccessToken(userData.accessToken);
     };
@@ -46,7 +46,7 @@ export const UserProvider = ({children}) => {
     };
 
     return (
-        <UserContext.Provider value={{username, login, logout, fetchWithAuth}}>
+        <UserContext.Provider value={{username, setCredentials, logout, fetchWithAuth}}>
             {children}
         </UserContext.Provider>
     );
