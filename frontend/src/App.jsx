@@ -10,6 +10,7 @@ import UploadBook from "./routes/Upload/UploadBook.jsx";
 import Login from "./routes/Login/Login.jsx";
 import {UserProvider} from "./context/UserContext.jsx";
 import Logout from "./routes/Logout/Logout.jsx";
+import Register from "./routes/Register/Register.jsx";
 
 export default function App() {
     useEffect(() => {
@@ -30,6 +31,7 @@ export default function App() {
                         <Route path="authors/:author_id" element={<Authors/>}/>
                         <Route path="users/login" element={<Login/>}/>
                         <Route path="users/logout" element={<Logout/>}/>
+                        <Route path="users/register" element={<Register/>}/>
                     </Routes>
                 </div>
             </UserProvider>

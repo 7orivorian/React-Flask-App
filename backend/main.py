@@ -208,7 +208,11 @@ def register_user():
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({'message': 'User added successfully!'})
+    return jsonify({
+        'message': 'User added successfully!',
+        'username': user.username,
+        'access_token': user.generate_access_token()
+    })
 
 
 @app.route('/users/login', methods=['POST'])
@@ -222,13 +226,11 @@ def login_user():
     if not user.check_password(data['password']):
         return jsonify({'message': 'Wrong password!'}), 401
 
-    access_token = user.generate_access_token()
-
     return jsonify({
         'message': 'Register successful!',
         'id': user.id,
         'username': user.username,
-        'access_token': access_token
+        'access_token': user.generate_access_token()
     })
 
 
