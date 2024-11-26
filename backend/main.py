@@ -204,8 +204,11 @@ def add_review():
     return jsonify({'message': 'Review added successfully!'})
 
 
-if __name__ == '__main__':
+def initialize_db():
     with app.app_context():
         db.create_all()
 
+
+if __name__ == '__main__':
+    initialize_db()
     app.run(debug=True)
