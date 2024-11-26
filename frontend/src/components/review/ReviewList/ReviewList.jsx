@@ -1,25 +1,7 @@
 import "./review-list.scss";
-import {useEffect, useState} from "react";
 import Review from "../Review/Review.jsx";
 
-export default function ReviewList({bookId}) {
-    const [reviews, setReviews] = useState([]);
-
-    useEffect(() => {
-        fetchReviews();
-    }, []);
-
-    const fetchReviews = () => {
-        const url = `${import.meta.env.VITE_API_URL}/books/${bookId}/reviews`;
-        fetch(url)
-            .then(response => response.json())
-            .then(data => setReviews(data.reviews))
-            .catch(error => {
-                console.error(error);
-                setReviews([])
-            });
-    }
-
+export default function ReviewList({reviews}) {
     return (
         <>
             <h2>Reviews</h2>

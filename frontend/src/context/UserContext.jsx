@@ -8,13 +8,15 @@ export const useUser = () => useContext(UserContext);
 
 // Provider Component
 export const UserProvider = ({children}) => {
+    const [userId, setUserId] = useState(null);
     const [username, setUsername] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
 
     // Method to set user data (e.g., after login)
     const setCredentials = (userData) => {
+        setUserId(userData.id);
         setUsername(userData.username);
-        setAccessToken(userData.accessToken);
+        setAccessToken(userData.access_token);
     };
 
     // Method to clear user data (e.g., after logout)
@@ -32,21 +34,17 @@ export const UserProvider = ({children}) => {
     };
 
     // Method to fetch with access token automatically included
-    const fetchWithAuth = async (url, options = {}) => {
+    const fetchWithAuth = (url, options = {}) => {
         const headers = {
             ...options.headers,
             Authorization: `Bearer ${accessToken}`,
         };
 
-        const response = await fetch(url, {...options, headers});
-        if (!response.ok) {
-            throw new Error(`HTTP Error: ${response.status}`);
-        }
-        return response.json();
+        return fetch(url, {...options, headers});
     };
 
     return (
-        <UserContext.Provider value={{username, setCredentials, logout, fetchWithAuth}}>
+        <UserContext.Provider value={{username, userId, setCredentials, logout, fetchWithAuth}}>
             {children}
         </UserContext.Provider>
     );

@@ -4,6 +4,7 @@ from flask import jsonify, request
 
 from config import app, db
 from models import Author, Book, User, Review, Series
+from utils import get_user_from_token
 
 
 @app.route('/authors', methods=['GET'])
@@ -236,20 +237,16 @@ def login_user():
 
 @app.route('/users/logout', methods=['DELETE'])
 def logout_user():
+    # Get the user and handle any errors related to the token
+    user, error_message, status_code = get_user_from_token()
+    if error_message:
+        return jsonify({'message': error_message}), status_code
+
     data = request.get_json()
 
-    # Validate input data
-    if 'username' not in data or 'access_token' not in data:
-        return jsonify({'message': 'Username and access token are required!'}), 400
-
     # Fetch the user by username
-    user = User.query.filter_by(username=data['username']).first()
-    if not user:
-        return jsonify({'message': 'User not found!'}), 404
-
-    # Validate the access token
-    if user.access_token != data['access_token']:
-        return jsonify({'message': 'Invalid access token!'}), 401
+    if user.username != data['username']:
+        return jsonify({'message': 'User username does not match the token user!'}), 401
 
     # Invalidate the token and log out the user
     user.logout()
@@ -265,23 +262,30 @@ def get_reviews(book_id):
 
 @app.route('/reviews', methods=['POST'])
 def add_review():
+    # Get the user and handle any errors related to the token
+    user, error_message, status_code = get_user_from_token()
+    if error_message:
+        return jsonify({'message': error_message}), status_code
+
+    # Parse the review data
     data = request.get_json()
 
-    if 'access_token' not in data:
-        return jsonify({'message': 'Access token required!'}), 401
+    if 'user_id' not in data:
+        return jsonify({'message': 'User ID is required!'}), 400
 
-    user = User.query.filter_by(id=data['user_id']).first()
-    if not user:
-        return jsonify({'message': 'User not found!'}), 404
+    # Ensure the user ID matches the authenticated user
+    if user.id != data['user_id']:
+        return jsonify({'message': 'User ID does not match the token user!'}), 401
 
-    # Validate the access token
-    if user.access_token != data['access_token']:
-        return jsonify({'message': 'Invalid access token!'}), 401
-
+    # Create the review and save it
     review = Review(book_id=data['book_id'], user_id=data['user_id'], rating=data['rating'], comment=data['comment'])
     db.session.add(review)
     db.session.commit()
-    return jsonify({'message': 'Review added successfully!'})
+
+    return jsonify({
+        'message': 'Review added successfully!',
+        'review': review.to_json()
+    })
 
 
 def initialize_db():

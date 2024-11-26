@@ -1,10 +1,30 @@
 import "./review-section.scss";
 import ReviewList from "../ReviewList/ReviewList.jsx";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
+import {useUser} from "../../../context/UserContext.jsx";
 
 export default function ReviewSection({book}) {
+    const [reviews, setReviews] = useState([]);
+
+    useEffect(() => {
+        fetchReviews();
+    }, []);
+
+    const fetchReviews = () => {
+        const url = `${import.meta.env.VITE_API_URL}/books/${book.id}/reviews`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => setReviews(data.reviews))
+            .catch(error => {
+                console.error(error);
+                setReviews([])
+            });
+    }
+
+    const {fetchWithAuth, userId} = useUser();
+
     const initialValues = {
         rating: 3, // Default value for the rating slider
         comment: "",
@@ -18,9 +38,31 @@ export default function ReviewSection({book}) {
 
     const handleSubmit = (values, {resetForm}) => {
         const {rating, comment} = values;
-        // Logic to save the review (e.g., call an API or update state)
-        console.log("Review submitted:", {rating, comment});
-        resetForm(); // Reset form after submission
+
+        const data = {
+            rating,
+            comment,
+            user_id: userId,
+            book_id: book.id
+        };
+
+        const url = `${import.meta.env.VITE_API_URL}/reviews`;
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+
+        fetchWithAuth(url, options)
+            .then(res => res.json())
+            .then(json => {
+                setReviews([...reviews, json.review])
+            })
+            .catch(e => console.error(e))
+
+        resetForm();
     };
 
     return (
@@ -69,7 +111,7 @@ export default function ReviewSection({book}) {
                         </Form>
                     )}
                 </Formik>
-                <ReviewList bookId={book.id}/>
+                <ReviewList reviews={reviews}/>
             </div>
         </>
     );
