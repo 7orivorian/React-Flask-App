@@ -1,3 +1,5 @@
+from sqlalchemy.orm import validates
+
 from config import db
 
 
@@ -70,6 +72,13 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     access_token = db.Column(db.String(64), unique=False, nullable=True)
+
+    @validates('username')
+    def validate_username(self, key, username):
+        import re
+        if not re.match(r'^[a-zA-Z0-9]+$', username):
+            raise ValueError('Username can only contain letters and/or numbers.')
+        return username
 
     def to_json(self):
         return {
