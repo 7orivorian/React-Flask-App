@@ -1,3 +1,13 @@
+# React-Flask Library
+
+This is a straightforward app using React, Flask, & SQLAlchemy allowing
+users to view & upload book information, post book reviews, and find more
+books by their favorite authors.
+
+> [!NOTE]
+> To post a review, you must either register a new account, or you can log
+> into the existing `BookCat` account using the password `catmeow`.
+
 # Running the Application
 
 ## Backend Setup
