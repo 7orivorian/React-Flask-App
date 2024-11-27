@@ -1,15 +1,54 @@
-# React Flask App
+# Running the Application
 
-WIP
+## Backend Setup
 
-## Running the App
+1. Navigate to the `backend` folder:
+   ```bash
+   cd backend
+   ```
 
-### Backend
+2. Create a virtual environment:
+    ```bash
+    python -m venv venv
+    ```
 
-1. `cd backend`
-2. `flask run`
+3. Activate the virtual environment:
+    - On Windows:
+       ```bash
+       venv\Scripts\activate
+       ```
+    - On macOS/Linux:
+       ```bash
+       source venv/bin/activate
+       ```
 
-### Frontend
+4. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-1. `cd frontend`
-2. `npm run dev`
+5. Start the Flask backend:
+   ```bash
+   flask run
+   ```
+
+## Fontend Setup
+
+1. Navigate to the `frontend` folder:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the frontend development server
+   ```bash
+   npm run dev
+   ```
+
+# Contributing
+
+This project is a simple full-stack application written for a school project,
+and is not open to contributions. Feel free to download/fork/clone and make
+modifications to your own version.
