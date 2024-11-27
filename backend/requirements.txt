@@ -1,6 +1,4 @@
 flask
+flask-cors
 flask-sqlalchemy
-flask_cors
-waitress
 python-dotenv
-psycopg2-binary

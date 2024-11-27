@@ -7,7 +7,7 @@ WIP
 ### Backend
 
 1. `cd backend`
-2. `python wsgi.py`
+2. `flask run`
 
 ### Frontend
 
