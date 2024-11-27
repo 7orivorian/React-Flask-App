@@ -7,6 +7,7 @@ import {useUser} from "../../../context/UserContext.jsx";
 
 export default function ReviewSection({book}) {
     const [reviews, setReviews] = useState([]);
+    const {fetchWithAuth, userId} = useUser();
 
     useEffect(() => {
         fetchReviews();
@@ -23,7 +24,6 @@ export default function ReviewSection({book}) {
             });
     }
 
-    const {fetchWithAuth, userId} = useUser();
 
     const initialValues = {
         rating: 3, // Default value for the rating slider
@@ -37,6 +37,10 @@ export default function ReviewSection({book}) {
     });
 
     const handleSubmit = (values, {resetForm}) => {
+        if (!userId) {
+            alert('You must be logged in to post a review.');
+            return;
+        }
         const {rating, comment} = values;
 
         const data = {
