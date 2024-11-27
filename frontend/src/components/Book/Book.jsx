@@ -1,7 +1,7 @@
 import "./book.scss";
 import {useNavigate} from "react-router";
 
-export default function Book({book, searchFillCallback}) {
+export default function Book({books, book, searchFillCallback}) {
     const navigate = useNavigate();
 
     const date = new Date(book.published).toISOString().split('T')[0];
@@ -10,7 +10,8 @@ export default function Book({book, searchFillCallback}) {
     const seriesName = book.series?.name;
 
     return (
-        <li className="book" key={book.id} onClick={() => navigate(`/books/${book.id}`, {state: {book: book}})}>
+        <li className="book" key={book.id}
+            onClick={() => navigate(`/books/${book.id}`, {state: {book: book}})}>
             <div className="book-title-container">
                 <h3 className="book-title">{book.title}</h3>
                 {book.series && (

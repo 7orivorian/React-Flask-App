@@ -4,11 +4,13 @@ import {useEffect} from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import ReviewSection from "../../components/review/ReviewSection/ReviewSection.jsx";
+import {useBooks} from "../../context/BooksContext.jsx";
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
 
 export default function BookDetails() {
+    const {removeBook} = useBooks();
     const navigate = useNavigate();
     const location = useLocation();
     const {book} = location.state || {}
@@ -35,6 +37,15 @@ export default function BookDetails() {
         }
     };
 
+    const handleBookUpdate = () => {
+        navigate(`/books/${book.id}/update`, {state: {book: book}})
+    };
+
+    const handleBookDeletion = () => {
+        removeBook(book.id);
+        navigate('/');
+    };
+
     const searchForSeries = () => {
         const queryParams = new URLSearchParams({search: `${book.series.name}`}).toString(); // Construct the query string
         navigate(`/books?${queryParams}`); // Navigate to the target page with query string
@@ -50,6 +61,8 @@ export default function BookDetails() {
         <>
             <h1 className="book-details__title">{book.title}</h1>
             <p className="book-details__author">by {book.author.name}</p>
+            <button className="book-details__update" onClick={handleBookUpdate}>Update this Book</button>
+            <button className="book-details__delete" onClick={handleBookDeletion}>Delete this Book</button>
             <div className="book-details__section-container">
                 <div className="book-details__section">
                     <h3 className="book-details__section-header">Description</h3>
@@ -68,5 +81,5 @@ export default function BookDetails() {
             )}
             <ReviewSection book={book}/>
         </>
-    )
+    );
 }

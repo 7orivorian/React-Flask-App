@@ -1,31 +1,17 @@
 import "./books.scss";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import Book from "../../components/Book/Book.jsx";
 import {useLocation} from "react-router";
+import {useBooks} from "../../context/BooksContext.jsx";
 
 export default function Books() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const key = queryParams.get('search') || "";
 
-    const [books, setBooks] = useState([]);
+    const {books} = useBooks();
+
     const [search, setSearch] = useState(key);
-
-    useEffect(() => {
-        fetchBooks();
-    }, []);
-
-    const fetchBooks = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/books`);
-            if (response.ok) {
-                const data = await response.json();
-                setBooks(data.books);
-            }
-        } catch (error) {
-            console.error("Error fetching books:", error);
-        }
-    };
 
     const searchFillCallback = (search) => {
         setSearch(search);
@@ -61,7 +47,7 @@ export default function Books() {
             {displayBooks && displayBooks.length > 0 ? (
                 <ul className="book-list">
                     {displayBooks.map((book) => (
-                        <Book key={book.id} book={book} searchFillCallback={searchFillCallback}/>
+                        <Book key={book.id} books={books} book={book} searchFillCallback={searchFillCallback}/>
                     ))}
                 </ul>
             ) : (

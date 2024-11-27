@@ -1,17 +1,23 @@
-import "./upload-book.scss";
+import "./update-book.scss";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import {useBooks} from "../../context/BooksContext.jsx";
+import {useLocation, useNavigate} from "react-router";
 
-export default function UploadBook() {
-    const {addBook} = useBooks();
+export default function UpdateBook() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {book} = location.state || {}
+    const {updateBook} = useBooks();
 
+    const date = new Date(book.published);
+    const formattedDate = date.toISOString().split('T')[0];
     const initialValues = {
-        title: "",
-        description: "",
-        published: "",
-        author: "",
-        series: "",
+        title: book.title,
+        description: book.description,
+        published: formattedDate,
+        author: book.author.name,
+        series: book.series ? book.series.name : "",
     };
 
     const validationSchema = Yup.object({
@@ -23,6 +29,7 @@ export default function UploadBook() {
     });
 
     const handleSubmit = async (values, actions) => {
+
         const data = {
             title: values.title,
             description: values.description,
@@ -30,32 +37,24 @@ export default function UploadBook() {
             author_name: values.author,
             series_name: values.series,
         };
-        const url = `${import.meta.env.VITE_API_URL}/books`;
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-        };
 
-        const response = await fetch(url, options);
-
-        if (response.ok) {
-            const resData = await response.json();
-            alert('Book uploaded successfully!');
-            actions.resetForm();
-            addBook(resData.book);
-        } else {
-            alert('Failed to upload the book. Please try again.');
-        }
+        updateBook(book.id, data)
+            .then(bookData => {
+                actions.resetForm();
+                navigate(`/`);
+                return bookData;
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Failed to update the book. Please try again.');
+            });
 
         actions.setSubmitting(false);
     };
 
     return (
         <>
-            <h1>Upload a Book</h1>
+            <h1>Update {book.name}</h1>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
@@ -89,7 +88,7 @@ export default function UploadBook() {
                             <ErrorMessage name="series" component="div" className="error-message"/>
                         </div>
                         <div className="book-form-section">
-                            <button type="submit" disabled={isSubmitting}>Upload</button>
+                            <button type="submit" disabled={isSubmitting}>Submit Changes</button>
                         </div>
                     </Form>
                 )}

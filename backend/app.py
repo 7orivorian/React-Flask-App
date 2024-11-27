@@ -64,12 +64,16 @@ def get_books():
 @app.route('/books/<int:book_id>', methods=['GET'])
 def get_book(book_id):
     book = Book.query.get(book_id)
+    if not book:
+        return jsonify({'message': 'Book not found!'}), 404
     return jsonify({'book': book.to_json()})
 
 
 @app.route('/books/<string:title>', methods=['GET'])
 def get_book_by_title(title):
     book = Book.query.filter_by(title=title).first()
+    if not book:
+        return jsonify({'message': 'Book not found!'}), 404
     return jsonify({'book': book.to_json()})
 
 
@@ -108,7 +112,7 @@ def add_book():
     db.session.add(book)
     db.session.commit()
 
-    return jsonify({'message': 'Book added successfully!', 'book_id': book.id})
+    return jsonify({'message': 'Book added successfully!', 'book_id': book.id, 'book': book.to_json()})
 
 
 @app.route('/batchaddbooks', methods=['POST'])
@@ -169,20 +173,33 @@ def update_book(book_id):
         # Parse published date
         published_date = datetime.strptime(data.get('published'), '%Y-%m-%d').date()
         book.published = published_date
-    if data.get('author_id'):
-        book.author_id = data.get('author_id')
-    if data.get('prequel_id'):
-        book.prequel_id = data.get('prequel_id')
-    if data.get('sequel_id'):
-        book.sequel_id = data.get('sequel_id')
+
+        # Check if author exists by name or create a new one
+        author = Author.query.filter_by(name=data['author_name']).first()
+        if not author:
+            author = Author(name=data['author_name'])
+            db.session.add(author)
+            db.session.commit()  # Commit to get the author an ID
+
+        series_name = data.get('series_name')
+        series = None
+        if series_name:
+            # Check if series exists by name or create a new one
+            series = Series.query.filter_by(name=series_name).first()
+            if not series:
+                series = Series(name=series_name)
+                db.session.add(series)
+                db.session.commit()  # Commit to get the series an ID
 
     db.session.commit()
-    return jsonify({'message': 'Book updated successfully!'})
+    return jsonify({'message': 'Book updated successfully!', 'book': book.to_json()})
 
 
 @app.route('/books/<int:book_id>', methods=['DELETE'])
 def delete_book(book_id):
     book = Book.query.get(book_id)
+    if not book:
+        return jsonify({'message': 'Book not found!'}), 404
     db.session.delete(book)
     db.session.commit()
     return jsonify({'message': 'Book deleted successfully!'})
