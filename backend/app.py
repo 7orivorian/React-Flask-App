@@ -174,22 +174,26 @@ def update_book(book_id):
         published_date = datetime.strptime(data.get('published'), '%Y-%m-%d').date()
         book.published = published_date
 
-        # Check if author exists by name or create a new one
-        author = Author.query.filter_by(name=data['author_name']).first()
-        if not author:
-            author = Author(name=data['author_name'])
-            db.session.add(author)
-            db.session.commit()  # Commit to get the author an ID
+    # Check if author exists by name or create a new one
+    author = Author.query.filter_by(name=data['author_name']).first()
+    if not author:
+        author = Author(name=data['author_name'])
+        db.session.add(author)
+        db.session.commit()  # Commit to get the author an ID
 
-        series_name = data.get('series_name')
-        series = None
-        if series_name:
-            # Check if series exists by name or create a new one
-            series = Series.query.filter_by(name=series_name).first()
-            if not series:
-                series = Series(name=series_name)
-                db.session.add(series)
-                db.session.commit()  # Commit to get the series an ID
+    book.author = author
+
+    series_name = data.get('series_name')
+    series = None
+    if series_name:
+        # Check if series exists by name or create a new one
+        series = Series.query.filter_by(name=series_name).first()
+        if not series:
+            series = Series(name=series_name)
+            db.session.add(series)
+            db.session.commit()  # Commit to get the series an ID
+
+    book.series = series
 
     db.session.commit()
     return jsonify({'message': 'Book updated successfully!', 'book': book.to_json()})
