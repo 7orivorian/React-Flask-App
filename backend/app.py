@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from flask import jsonify, request
 
 from config import app, db
@@ -50,7 +49,8 @@ def batch_add_authors():
     for author_data in authors:
         author = Author(name=author_data['name'])
         db.session.add(author)
-        db.session.commit()
+
+    db.session.commit()
     return jsonify({'message': 'Authors added successfully!'})
 
 
@@ -150,7 +150,8 @@ def batch_add_books():
             series_id=series.id if series else None  # Optional series reference
         )
         db.session.add(book)
-        db.session.commit()
+
+    db.session.commit()
 
     return jsonify({'message': 'Books added successfully!'})
 
