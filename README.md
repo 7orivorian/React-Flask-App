@@ -12,6 +12,12 @@ books by their favorite authors.
 
 ## Backend Setup
 
+Before setting up, I recommend creating a `.env` file and add this:
+
+```.env
+DATABASE_URL=sqlite:///mydatabase.db
+```
+
 1. Navigate to the `backend` folder:
    ```bash
    cd backend
